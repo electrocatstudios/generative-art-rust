@@ -8,6 +8,7 @@ const WIDTH: u32 = 800;
 const HEIGHT: u32 = 600;
 const FRAMES: u32 = 60;
 const SIZE: u32 = 16;
+const DECAY: u32 = 15;
 
 fn main() {
     println!("Starting");
@@ -21,13 +22,45 @@ fn main() {
     let mut encoder = Encoder::new(&mut image, WIDTH as u16, HEIGHT as u16, color_map).unwrap();
     encoder.set_repeat(Repeat::Infinite).unwrap();
     
+    let mut prev_image: Option<RgbImage> = None;
+
     for frame in 0..FRAMES {
-        // a default (black) image containing Rgb values
+        // a default (black) image containing Rgb values        
         let mut image: RgbImage = RgbImage::new(WIDTH, HEIGHT);
         // Set background
         for x in 0..WIDTH {
             for y in 0..HEIGHT {
-                image.put_pixel(x, y, Rgb([120, 120, 120]));
+
+                match prev_image {
+                    Some(ref prev_image) => {
+                        let mut pix_col: Rgb<u8> = *prev_image.get_pixel(x,y);
+                        if pix_col[0] != 0 {
+                            if pix_col[0] >= DECAY as u8 {
+                                pix_col[0] -= DECAY as u8;
+                            }else{
+                                pix_col[0] = 0;
+                            }
+                        }
+                        if pix_col[1] != 0 {
+                            if pix_col[1] >= DECAY as u8 {
+                                pix_col[1] -= DECAY as u8;
+                            }else{
+                                pix_col[1] = 0;
+                            }
+                        }
+                        if pix_col[2] != 0 {
+                            if pix_col[2] >= DECAY as u8 {
+                                pix_col[2] -= DECAY as u8;
+                            }else{
+                                pix_col[2] = 0;
+                            }
+                        }
+                        image.put_pixel(x,y,pix_col);
+                    },
+                    None => {
+                        image.put_pixel(x, y, Rgb([0, 0, 0]));
+                    }
+                }
             }
         }
 
@@ -59,6 +92,8 @@ fn main() {
         let mut frame = Frame::from_rgb(WIDTH as u16, HEIGHT as u16, image.as_raw());
         frame.delay = 1;
         encoder.write_frame(&frame).unwrap();
+
+        prev_image = Some(image.clone());
         // write it out to a file
         // let filename = "outputs/".to_owned() + &frame.to_string() + ".png";
         // image.save(filename).unwrap();
