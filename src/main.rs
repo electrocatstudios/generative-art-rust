@@ -2,7 +2,7 @@
 use gif::{Frame, Encoder, Repeat};
 use image::{RgbImage,Rgb};
 use std::fs::File;
-
+use std::fs;
 
 const WIDTH: u32 = 800;
 const HEIGHT: u32 = 600;
@@ -11,6 +11,10 @@ const SIZE: u32 = 16;
 
 fn main() {
     println!("Starting");
+
+    // Generate folders if missing
+    fs::create_dir_all("gifs").expect("Failed to generate gifs folder");
+    fs::create_dir_all("outputs").expect("Failed to generate outputs folder");
 
     let color_map = &[];//&[0xFF, 0xFF, 0xFF, 0, 0, 0];
     let mut image = File::create("gifs/output.gif").unwrap();
