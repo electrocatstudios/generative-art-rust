@@ -54,3 +54,7 @@ const DECAY: u32 = 10;
 which should produce the following output:
 
 ![Example output rotating green square](docs/green_cycle_clockwise.gif)
+
+### Accessing example code
+
+A list of examples can be found on the [Examples Page](docs/examples.md)
