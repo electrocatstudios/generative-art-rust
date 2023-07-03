@@ -16,6 +16,6 @@ RUN apt update --fix-missing && \
 COPY Cargo.toml /app/
 COPY src /app/src
 
-RUN cargo run  
-ENTRYPOINT [ "cp", "/app/videos/*.mp4", "/data/"]
-# ENTRYPOINT [ "cp", "/app/gifs/*.gif", "/data/", "&&", "cp", "/app/videos/*.mp4", "/data/"]
+RUN cargo run
+
+CMD [ "cp", "-r", "/app/outputs/", "/data/"]
