@@ -1,15 +1,21 @@
 FROM rust:latest
 
 WORKDIR /app
-COPY Cargo.toml /app/
-COPY src /app/src
 
-RUN apt update && \
+RUN apt update --fix-missing && \
     apt install libavutil-dev -y && \
     apt install libavcodec-dev -y && \
     apt install libavformat-dev -y && \
     apt install libswscale-dev -y && \
+    apt install libavfilter-dev -y && \
+    apt install libavdevice-dev -y && \  
+    apt install libclang-dev -y && \ 
+    apt install librust-clang-sys-dev -y && \
     apt install ffmpeg -y
 
-RUN cargo run
-ENTRYPOINT [ "cp", "/app/gifs/output.gif", "/data/" ]
+COPY Cargo.toml /app/
+COPY src /app/src
+
+RUN cargo run  
+ENTRYPOINT [ "cp", "/app/videos/*.mp4", "/data/"]
+# ENTRYPOINT [ "cp", "/app/gifs/*.gif", "/data/", "&&", "cp", "/app/videos/*.mp4", "/data/"]
