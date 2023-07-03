@@ -19,10 +19,11 @@ const DECAY: u32 = 4;
 fn main() {
     println!("Starting");
 
-    // Generate folders if missing
+    // Generate output folders if missing
     fs::create_dir_all("gifs").expect("Failed to generate gifs folder");
-    fs::create_dir_all("outputs").expect("Failed to generate outputs folder");
+    // fs::create_dir_all("outputs").expect("Failed to generate outputs folder");
     fs::create_dir_all("videos").expect("Failed to generate videos folder");
+    // End generate output folders
 
     // GIF setup
     let color_map = &[];//&[0xFF, 0xFF, 0xFF, 0, 0, 0];
@@ -47,6 +48,7 @@ fn main() {
                 match prev_image {
                     Some(ref prev_image) => {
                         let mut pix_col: Rgb<u8> = *prev_image.get_pixel(x,y);
+                        // Add decay to any non-black pixel
                         if pix_col[0] != 0 {
                             if pix_col[0] >= DECAY as u8 {
                                 pix_col[0] -= DECAY as u8;
@@ -108,7 +110,8 @@ fn main() {
         }
         // End frame generation
 
-        // Generate next frame
+        // Generate next frame for output - we run the animation twice and capture the second half of the first reptition
+        // and the first half of the second repetition - meaning we can get any fading colors captured as well
         if frame >= FRAMES / 2 && frame < (FRAMES*3/2) {
             // GIF 
             let mut frame = Frame::from_rgb(WIDTH as u16, HEIGHT as u16, image.as_raw());
