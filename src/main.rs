@@ -4,11 +4,11 @@ use image::{RgbImage,Rgb};
 use std::fs::File;
 use std::fs;
 
-const WIDTH: u32 = 800;
+const WIDTH: u32 = 600;
 const HEIGHT: u32 = 600;
-const FRAMES: u32 = 60;
-const SIZE: u32 = 16;
-const DECAY: u32 = 15;
+const FRAMES: u32 = 120;
+const SIZE: u32 = 128;
+const DECAY: u32 = 4;
 
 fn main() {
     println!("Starting");
@@ -24,7 +24,7 @@ fn main() {
     
     let mut prev_image: Option<RgbImage> = None;
 
-    for frame in 0..FRAMES {
+    for frame in 0..FRAMES*2 {
         // a default (black) image containing Rgb values        
         let mut image: RgbImage = RgbImage::new(WIDTH, HEIGHT);
         // Set background
@@ -65,34 +65,40 @@ fn main() {
         }
 
 
-        let frame_fraction = frame as f32 / (WIDTH as f32/FRAMES as f32);
-        
-        let mut offset_x: u32 = 0;
-        
-        if frame != 0 {
-            offset_x = frame * WIDTH/FRAMES;
+        let mut fr = frame;
+        if fr >= FRAMES {
+            fr -= FRAMES;
         }
-        let half_width: f32 = HEIGHT as f32/2.0 ;
-        let offset_y: i32 = (HEIGHT as i32/2) - (frame_fraction.sin() * half_width) as i32;
-        // print!("{:?} -> {:?} \n", offset_y, frame_fraction.sin());
-        
+        let frame_fraction = frame as f32 / FRAMES as f32;
+        println!("frame fraction {:?}", frame_fraction);
+
+        let fraction_radian = frame_fraction * (std::f32::consts::PI * 2.0);
+        let half_width: f32 = WIDTH as f32/2.0;
+        let offset_x =  (WIDTH as i32/2) + (fraction_radian.sin() * (half_width * 0.8)) as i32;
+        let half_height: f32 = HEIGHT as f32/2.0 ;
+        let offset_y: i32 = (HEIGHT as i32/2) - (fraction_radian.cos() * (half_height * 0.8)) as i32;
+        let red:u8 = 100 + (fraction_radian.sin() * 155.0) as u8;
+        let green: u8 = 255 -(fraction_radian.sin() * 255.0) as u8 ;
+        let blue: u8 = 255 - (fraction_radian.cos() * 255.0) as u8; 
         // set a central pixel to white
         for x in 0..SIZE {
             for y in 0..SIZE {
-                let x_pos = x + offset_x;
-                let y_pos = y + offset_y as u32;
+                let half_size = SIZE as i32/2;
+                let x_pos = (x as i32 + offset_x) - half_size;
+                let y_pos = (y as i32 + offset_y) - half_size;
 
-                if x_pos > 0 && x_pos < WIDTH && y_pos > 0 && y_pos < HEIGHT {
-                    image.put_pixel(x_pos, y_pos, Rgb([55, 255, 55]));
+                if x_pos > 0 && x_pos < WIDTH as i32 && y_pos > 0 && y_pos < HEIGHT as i32 {
+                    image.put_pixel(x_pos as u32, y_pos as u32, Rgb([red, green, blue]));
                 }
             
             }
         }
-
-        let mut frame = Frame::from_rgb(WIDTH as u16, HEIGHT as u16, image.as_raw());
-        frame.delay = 1;
-        encoder.write_frame(&frame).unwrap();
-
+        if frame >= FRAMES / 2 && frame < (FRAMES*3/2) {
+            let mut frame = Frame::from_rgb(WIDTH as u16, HEIGHT as u16, image.as_raw());
+            frame.delay = 1;
+            encoder.write_frame(&frame).unwrap();
+        }
+        
         prev_image = Some(image.clone());
         // write it out to a file
         // let filename = "outputs/".to_owned() + &frame.to_string() + ".png";
