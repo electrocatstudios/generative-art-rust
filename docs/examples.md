@@ -17,3 +17,13 @@ is available on `example/color-changing-wheel`.
 ![Rotating Color Wheel](rotating_color_wheel.gif)
 
 More information available [here](rotating-color-wheel.md).
+
+
+### Figure of 8
+
+A rotating wheel of color which changes as time goes by. The code 
+is available on `example/figure_of_8`.
+
+![Figure of 8l](figure_of_8.gif)
+
+More information available [here](figure-of-8.md).
