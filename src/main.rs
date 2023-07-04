@@ -24,7 +24,7 @@ fn main() {
     // End generate output folders
 
     // GIF setup
-    let color_map = &[];//&[0xFF, 0xFF, 0xFF, 0, 0, 0];
+    let color_map = &[];
     let mut image = fs::File::create("outputs/output.gif").unwrap();
     let mut encoder = Encoder::new(&mut image, WIDTH as u16, HEIGHT as u16, color_map).unwrap();
     encoder.set_repeat(Repeat::Infinite).unwrap();
