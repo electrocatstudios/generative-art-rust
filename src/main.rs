@@ -7,7 +7,6 @@ use openh264;
 
 use std::io::{Cursor, Read, Seek, SeekFrom};
 use std::fs;
-// use std::path::PathBuf;
 
 const WIDTH: u32 = 600;
 const HEIGHT: u32 = 600;
@@ -79,7 +78,8 @@ fn main() {
 
         // Perform caluclation of current frame state
         let frame_fraction = frame as f32 / FRAMES as f32;
-        print!("\rRendering Frames: {:.2}%", frame_fraction * 50.0);
+        print!("\rRendering Frames: {:.2}%", frame_fraction * 50.0); // Multiplied by 50 because we render rounds of the 
+                                                                     // animation loop, to catch any decaying pixels
         //// #### TODO: Put your code here
         
         // End frame generation
