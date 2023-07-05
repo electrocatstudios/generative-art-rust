@@ -1,6 +1,7 @@
 // extern crate image;
 use gif::{Frame, Encoder, Repeat};
 use image::{RgbImage,Rgb};
+use imageproc::drawing::draw_line_segment_mut;
 
 use minimp4;
 use openh264;
@@ -11,8 +12,8 @@ use std::fs;
 const WIDTH: u32 = 600;
 const HEIGHT: u32 = 600;
 const FRAMES: u32 = 120;
-const REPETITIONS: u32 = 3;
-// const SIZE: u32 = 128;
+const REPETITIONS: u32 = 10;
+const SIZE: u32 = 64;
 const DECAY: u32 = 4;
 
 fn main() {
@@ -77,11 +78,25 @@ fn main() {
         }
 
         // Perform caluclation of current frame state
-        let frame_fraction = frame as f32 / FRAMES as f32;
+        let mut frame_fraction = frame as f32 / FRAMES as f32;    
+        if frame_fraction > 1.0 {
+            // Because we go around twice (so second frame run will be > 1)
+            frame_fraction -= 1.0;
+        }
         print!("\rRendering Frames: {:.2}%", frame_fraction * 50.0); // Multiplied by 50 because we render rounds of the 
                                                                      // animation loop, to catch any decaying pixels
-        //// #### TODO: Put your code here
         
+        let frame_fraction_radians = frame_fraction * 2.0 * std::f32::consts::PI;
+        let green: u8 = (frame_fraction_radians.cos() * 255.0) as u8;
+        let blue: u8 = (frame_fraction_radians.sin() * 255.0) as u8;
+        let color = Rgb([100, green, blue]);
+
+        let center_x: f32 = WIDTH as f32 / 2.0;
+        let center_y: f32 = HEIGHT as f32 / 2.0;
+        let line_point_x = center_x * frame_fraction_radians.sin();
+        let line_point_y = center_y * frame_fraction_radians.cos();
+    
+        draw_line_segment_mut(&mut image, (center_x + line_point_x, center_y + line_point_y ), (center_x, center_y), color);
         // End frame generation
 
         // Generate next frame for output - we run the animation twice and capture the second half of the first reptition
