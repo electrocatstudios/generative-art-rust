@@ -27,3 +27,12 @@ is available on `example/figure_of_8`.
 ![Figure of 8l](figure_of_8.gif)
 
 More information available [here](figure-of-8.md).
+
+### Color wheel (using imageproc)
+
+A wheel of color, using lines drawn from the center, using the imageproc
+library. It is available on `example/imageproc-drawing`
+
+![imageproc Color Wheel](imageproc_drawing.gif)
+
+More information available [here](imageproc-drawing.md).
