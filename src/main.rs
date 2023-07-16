@@ -1,6 +1,7 @@
 // extern crate image;
 use gif::{Frame, Encoder, Repeat};
 use image::{RgbImage,Rgb};
+use rand::prelude::*;
 
 use minimp4;
 use openh264;
@@ -8,12 +9,18 @@ use openh264;
 use std::io::{Cursor, Read, Seek, SeekFrom};
 use std::fs;
 
-const WIDTH: u32 = 600;
-const HEIGHT: u32 = 600;
-const FRAMES: u32 = 120;
+const WIDTH: u32 = 720;
+const HEIGHT: u32 = 480;
+const FRAMES: u32 = 240;
 const REPETITIONS: u32 = 3;
-// const SIZE: u32 = 128;
+const SIZE: u32 = 20;
 const DECAY: u32 = 4;
+
+struct ColorPoint {
+    color: Rgb<u8>,
+    height: u32,
+    multiplier: u32
+}
 
 fn main() {
     println!("Starting");
@@ -35,6 +42,21 @@ fn main() {
     // Generate the image - store prev frame in prev_image
     let mut prev_image: Option<RgbImage> = None;
     let mut buf = Vec::new();
+
+    let mut droplets = Vec::<ColorPoint>::new();
+    let number_droplets = WIDTH/SIZE;
+    let mut rng = rand::thread_rng();
+    for _ in 0..number_droplets{
+        let rand: f64 = rng.gen();
+        let height: u32 = (HEIGHT as f64 * rand) as u32;
+        let red = (rng.gen::<f64>() * 255.0) as u8;
+        let green = (rng.gen::<f64>() * 255.0) as u8;
+        let blue = (rng.gen::<f64>() * 255.0) as u8;
+        let multi = (rng.gen::<f64>() * 3.0) as u32;
+        droplets.push(ColorPoint{color:Rgb([red,green,blue]), height: height, multiplier: multi});
+    }
+
+    let fall_speed = HEIGHT as f64 / FRAMES as f64;
 
     for frame in 0..FRAMES*2 {
         let mut image: RgbImage = RgbImage::new(WIDTH, HEIGHT);
@@ -81,7 +103,22 @@ fn main() {
         print!("\rRendering Frames: {:.2}%", frame_fraction * 50.0); // Multiplied by 50 because we render rounds of the 
                                                                      // animation loop, to catch any decaying pixels
         //// #### TODO: Put your code here
-        
+        let mut count = 0;
+        for col_pt in droplets.iter_mut() {
+            col_pt.height += (fall_speed as u32) * col_pt.multiplier;
+            if col_pt.height > HEIGHT {
+                col_pt.height -= HEIGHT;
+            }
+            let x_pos = count * SIZE;
+            for x in x_pos..(x_pos+SIZE){
+                for y in col_pt.height..(col_pt.height+SIZE){
+                    if x < WIDTH && y<HEIGHT {
+                        image.put_pixel(x, y, col_pt.color);
+                    }
+                }
+            }
+            count += 1;
+        }
         // End frame generation
 
         // Generate next frame for output - we run the animation twice and capture the second half of the first reptition
