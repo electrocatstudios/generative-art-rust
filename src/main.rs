@@ -9,11 +9,11 @@ use openh264;
 use std::io::{Cursor, Read, Seek, SeekFrom};
 use std::fs;
 
-const WIDTH: u32 = 720;
-const HEIGHT: u32 = 480;
-const FRAMES: u32 = 240;
-const REPETITIONS: u32 = 3;
-const SIZE: u32 = 20;
+const WIDTH: u32 = 300;
+const HEIGHT: u32 = 200;
+const FRAMES: u32 = 100;
+const REPETITIONS: u32 = 10;
+const SIZE: u32 = 5;
 const DECAY: u32 = 4;
 
 struct ColorPoint {
@@ -49,10 +49,10 @@ fn main() {
     for _ in 0..number_droplets{
         let rand: f64 = rng.gen();
         let height: u32 = (HEIGHT as f64 * rand) as u32;
-        let red = (rng.gen::<f64>() * 255.0) as u8;
-        let green = (rng.gen::<f64>() * 255.0) as u8;
-        let blue = (rng.gen::<f64>() * 255.0) as u8;
-        let multi = (rng.gen::<f64>() * 3.0) as u32;
+        let red = (rng.gen::<f64>() * 200.0) as u8 + 55;
+        let green = (rng.gen::<f64>() * 200.0) as u8 + 55;
+        let blue = (rng.gen::<f64>() * 200.0) as u8 + 55;
+        let multi = (rng.gen::<f64>() * 2.0) as u32 + 1;
         droplets.push(ColorPoint{color:Rgb([red,green,blue]), height: height, multiplier: multi});
     }
 
@@ -100,7 +100,7 @@ fn main() {
 
         // Perform caluclation of current frame state
         let frame_fraction = frame as f32 / FRAMES as f32;
-        print!("\rRendering Frames: {:.2}%", frame_fraction * 50.0); // Multiplied by 50 because we render rounds of the 
+        print!("Rendering Frames: {:.2}%\n", frame_fraction * 50.0); // Multiplied by 50 because we render rounds of the 
                                                                      // animation loop, to catch any decaying pixels
         //// #### TODO: Put your code here
         let mut count = 0;
