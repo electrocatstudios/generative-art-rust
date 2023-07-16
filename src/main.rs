@@ -1,6 +1,7 @@
 // extern crate image;
 use gif::{Frame, Encoder, Repeat};
 use image::{RgbImage,Rgb};
+use imageproc::drawing::draw_line_segment_mut;
 
 use minimp4;
 use openh264;
@@ -9,11 +10,11 @@ use std::io::{Cursor, Read, Seek, SeekFrom};
 use std::fs;
 
 const WIDTH: u32 = 600;
-const HEIGHT: u32 = 600;
+const HEIGHT: u32 = 200;
 const FRAMES: u32 = 120;
-const REPETITIONS: u32 = 3;
+const REPETITIONS: u32 = 10;
 // const SIZE: u32 = 128;
-const DECAY: u32 = 4;
+const DECAY: u32 = 15;
 
 fn main() {
     println!("Starting");
@@ -77,10 +78,72 @@ fn main() {
         }
 
         // Perform caluclation of current frame state
-        let frame_fraction = frame as f32 / FRAMES as f32;
+        let mut frame_fraction = frame as f32 / FRAMES as f32;
+        if frame_fraction > 1.0 {
+            frame_fraction -= 1.0;
+        }
         print!("\rRendering Frames: {:.2}%", frame_fraction * 50.0); // Multiplied by 50 because we render rounds of the 
                                                                      // animation loop, to catch any decaying pixels
-        //// #### TODO: Put your code here
+
+        let box_size: f32 = 50.0;
+        let number_x = WIDTH/box_size as u32;
+        let number_y = HEIGHT/box_size as u32;
+        for tl_x in 0..number_x {
+            for tl_y in 0..number_y {
+                let color_frac = (tl_x + tl_y) as f32 / (number_x + number_y) as f32;
+            
+                let red = 128;
+                let blue_diff: u8 = (127.0 * color_frac) as u8;
+
+                let green = 128 + blue_diff;
+                let blue: u8 = 255 - blue_diff ;
+                // println!("Color frac {:?} -> {:?} ====> {:?}", color_frac, blue_diff, blue);
+
+                // let green = 128 + (127.0 * color_frac) as u8;
+                // let blue = 255 - (127.0 * color_frac) as u8;
+                let color = Rgb([red, green, blue]);
+                
+                let top_left_x: f32 = tl_x as f32 * box_size;
+                let top_left_y: f32 = tl_y as f32 * box_size;
+                let angle_fraction = frame_fraction * (std::f32::consts::PI * 2.0);
+
+                // Border
+                // draw_line_segment_mut(&mut image, (top_left_x, top_left_y), (top_left_x + box_size, top_left_y), color);
+                // draw_line_segment_mut(&mut image, (top_left_x + box_size, top_left_y), (top_left_x + box_size, top_left_y + box_size), color);
+                // draw_line_segment_mut(&mut image, (top_left_x + box_size, top_left_y + box_size), (top_left_x, top_left_y + box_size), color);
+                // draw_line_segment_mut(&mut image, (top_left_x, top_left_y + box_size), (top_left_x, top_left_y), color);
+
+                if frame_fraction < 0.25 {
+                    let start_x = top_left_x;
+                    let start_y = top_left_y;
+                    let end_x = start_x + (angle_fraction.sin() * box_size);
+                    let end_y = start_y + (angle_fraction.cos() * box_size);
+                    draw_line_segment_mut(&mut image, (start_x, start_y), (end_x, end_y), color);
+                    
+                } else if frame_fraction < 0.5 {
+                    let start_x = top_left_x + box_size;
+                    let start_y = top_left_y;
+                    let end_x = start_x - (angle_fraction.sin() * box_size);
+                    let end_y = start_y - (angle_fraction.cos() * box_size);
+                    draw_line_segment_mut(&mut image, (start_x, start_y), (end_x, end_y), color);
+                    
+                } else if frame_fraction < 0.75 {
+                    let start_x = top_left_x + box_size;
+                    let start_y = top_left_y + box_size;
+                    let end_x = start_x + (angle_fraction.sin() * box_size);
+                    let end_y = start_y + (angle_fraction.cos() * box_size);
+                    draw_line_segment_mut(&mut image, (start_x, start_y), (end_x, end_y), color);
+                    
+                } else {
+                    let start_x = top_left_x;
+                    let start_y = top_left_y + box_size;
+                    let end_x = start_x + (angle_fraction.sin() * -box_size);
+                    let end_y = start_y - (angle_fraction.cos() * box_size);
+                    draw_line_segment_mut(&mut image, (start_x, start_y), (end_x, end_y), color);
+                }
+            }
+        }
+        
         
         // End frame generation
 
