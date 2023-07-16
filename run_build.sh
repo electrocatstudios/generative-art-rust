@@ -1,3 +1,4 @@
+# Add --progress=plain to output build log
 docker build -t gen_rust .
 
 docker run \
