@@ -66,7 +66,7 @@ fn main() {
     let mut rng = rand::thread_rng();
 
     let mut letter_drops: vec::Vec::<LetterDrop> = vec::Vec::new();
-    let lane_width = (WIDTH - 10)/NUMBER_LANES; // 10 is twicer the border width
+    let lane_width = (WIDTH - 10)/NUMBER_LANES; // 10 is twice the border width
 
     for lane_num in 0..NUMBER_LANES {
         let mut vec_letters = vec::Vec::new();
