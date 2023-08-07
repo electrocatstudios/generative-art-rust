@@ -36,3 +36,13 @@ library. It is available on `example/imageproc-drawing`
 ![imageproc Color Wheel](imageproc_drawing.gif)
 
 More information available [here](imageproc-drawing.md).
+
+### Cascading Lettering
+
+A series of cascading letters leaving a green trail, reminiscent of a 
+popular sci-fi film from the 90s. It is available on the branch 
+`example/matrix-lettering`.
+
+![Cascading Letter Matrix](cascading-lettering.gif)
+
+More information availalbe [here](cascading-letter-matrix.md).
