@@ -98,7 +98,7 @@ fn main() {
             bitstream.write_vec(&mut buf);
         }
         
-        prev_image = Some(image.clone());
+        prev_image = Some(image.to_owned());
     }
     
     print!("\rRendering Frames: 100%-----\n"); // dashes to overwrite prev line
