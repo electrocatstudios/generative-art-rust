@@ -1,4 +1,3 @@
-// extern crate image;
 use gif::{Frame, Encoder, Repeat};
 use image::{RgbImage,Rgb};
 
@@ -12,7 +11,7 @@ const WIDTH: u32 = 600;
 const HEIGHT: u32 = 600;
 const FRAMES: u32 = 120;
 const REPETITIONS: u32 = 3;
-// const SIZE: u32 = 128;
+
 const DECAY: u32 = 4;
 
 fn main() {
@@ -106,7 +105,7 @@ fn main() {
 
     let mut video_buffer = Cursor::new(Vec::new());
     let mut mp4muxer = minimp4::Mp4Muxer::new(&mut video_buffer);
-    mp4muxer.init_video(WIDTH as i32, HEIGHT as i32, false, "Moving circle.");
+    mp4muxer.init_video(WIDTH as i32, HEIGHT as i32, false, "Generated Video");
     for _ in 0..REPETITIONS {
         mp4muxer.write_video(&buf);
     }
