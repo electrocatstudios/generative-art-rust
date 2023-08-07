@@ -9,8 +9,8 @@ use std::fs;
 
 const WIDTH: u32 = 600;
 const HEIGHT: u32 = 600;
-const FRAMES: u32 = 120;
-const REPETITIONS: u32 = 3;
+const FRAMES: u32 = 40;
+const REPETITIONS: u32 = 10;
 
 const DECAY: u32 = 4;
 
@@ -80,7 +80,18 @@ fn main() {
         print!("\rRendering Frames: {:.2}%", frame_fraction * 50.0); // Multiplied by 50 because we render rounds of the 
                                                                      // animation loop, to catch any decaying pixels
         //// #### TODO: Put your code here
-        
+        if frame == 0 {
+            let x_start = WIDTH/4;
+            let x_end = x_start * 3;
+            let y_start = HEIGHT/4;
+            let y_end = y_start * 3;
+
+            for x in x_start..x_end {
+                for y in y_start..y_end {
+                    image.put_pixel(x, y, Rgb([255, 50, 50]));
+                }
+            }
+        }
         // End frame generation
 
         // Generate next frame for output - we run the animation twice and capture the second half of the first reptition
