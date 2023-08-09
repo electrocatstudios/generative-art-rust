@@ -1,4 +1,3 @@
-// extern crate image;
 use gif::{Frame, Encoder, Repeat};
 use image::{RgbImage,Rgb};
 
@@ -7,7 +6,6 @@ use openh264;
 
 use std::io::{Cursor, Read, Seek, SeekFrom};
 use std::fs;
-// use std::path::PathBuf;
 
 const WIDTH: u32 = 600;
 const HEIGHT: u32 = 600;
