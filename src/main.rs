@@ -96,7 +96,7 @@ fn main() {
                 let x_pos = (x as i32 + offset_x) - half_size;
                 let y_pos = (y as i32 + offset_y) - half_size;
 
-                if x_pos > 0 && x_pos < WIDTH as i32 && y_pos > 0 && y_pos < HEIGHT as i32 {
+                if x_pos >= 0 && x_pos < WIDTH as i32 && y_pos >= 0 && y_pos < HEIGHT as i32 {
                     image.put_pixel(x_pos as u32, y_pos as u32, Rgb([red, green, blue]));
                 }
             
