@@ -1,4 +1,3 @@
-// extern crate image;
 use gif::{Frame, Encoder, Repeat};
 use image::{RgbImage,Rgb};
 use rand::prelude::*;
