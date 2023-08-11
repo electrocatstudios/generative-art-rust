@@ -15,6 +15,7 @@ RUN apt update --fix-missing && \
 
 COPY Cargo.toml /app/
 COPY src /app/src
+COPY fonts /app/fonts
 
 RUN cargo run
 
