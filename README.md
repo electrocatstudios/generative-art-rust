@@ -1,6 +1,11 @@
 # generative-art-rust
 Experiments with generating gifs and mp4s using Rust
 
+## YouTube series
+We are running a series of examples and tutorials on YouTube to show how this project works, as well as hoping to inspire you to make your own creations. 
+
+The series can be found [here](https://www.youtube.com/playlist?list=PLFOS-Gn3aXRMY45bqBNT8elRRsJ2gfKm2)
+
 ## To run locally
 `cargo run` - outputs to the `gifs` folder
 
