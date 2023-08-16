@@ -1,33 +1,47 @@
-# generative-art-rust
-Experiments with generating gifs and mp4s using Rust
+# Generative Art in Rust
+This is a framework project for creating Generative Art in Rust, making it very easy to
+create Gifs and MP4 videos from simple algorithms. There is a 
+[You Tube](https://www.youtube.com/playlist?list=PLFOS-Gn3aXRMY45bqBNT8elRRsJ2gfKm2) 
+series to go along with this project.
 
 ## YouTube series
-We are running a series of examples and tutorials on YouTube to show how this project works, as well as hoping to inspire you to make your own creations. 
+We are running a series of examples and tutorials on YouTube to show how this project works,
+as well as hoping to inspire you to make your own creations. 
 
 The series can be found [here](https://www.youtube.com/playlist?list=PLFOS-Gn3aXRMY45bqBNT8elRRsJ2gfKm2)
 
 ## To run locally
-`cargo run` - outputs to the `gifs` folder
+`cargo run` - outputs to the `outputs` folder
 
 ## To run in docker
-`./run_build.sh` - outputs to the `data` folder
+`./run_build.sh` - outputs to the `data/outputs` folder
 
 ## Adding Code
-You can add code in `main.rs` in the place indicated by a comment. This will be 
-rendered across each frame of the output (both gif and mp4). Below is an example.
+You can add code in `user.rs`. There are two stages, the `setup` phase where you can create 
+objects that are moved every frame, and the `render` stage which is called for every frame,
+passing in the fraction through the whole process. This has been updated since the original videos
+were released so some examples may differ. 
+
+If you look in `user.rs` you will see two functions `get_initial_state()` and `render_frame()`. Add
+code to be run during setup in the function `get_initial_state()` and anything that is needed to actually
+render each frame inside `render_frame()`.
 
 ### Example code
 Below is an example of a green square which will rotate around and leave a trail
 
 ```rust
-// Constants at the top of the file
+// Constants at the top main.rs
 const WIDTH: u32 = 600;
 const HEIGHT: u32 = 600;
 const FRAMES: u32 = 60;
 const REPETITIONS: u32 = 3;
 const SIZE: u32 = 16;
 const DECAY: u32 = 10;
+```
 
+And inside `user.rs` and specifically in the function `render_frame()`:
+
+```rust
 ...snip
 
         // Perform caluclation of current frame state
