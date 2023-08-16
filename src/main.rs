@@ -9,10 +9,10 @@ use std::fs;
 
 mod user;
 
-const WIDTH: u32 = 300;
-const HEIGHT: u32 = 300;
-const FRAMES: u32 = 60;
-const REPETITIONS: u32 = 3;
+const WIDTH: u32 = 600;
+const HEIGHT: u32 = 600;
+const FRAMES: u32 = 240;
+const REPETITIONS: u32 = 10;
 
 const DECAY: u32 = 4;
 

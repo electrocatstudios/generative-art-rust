@@ -4,7 +4,7 @@ use std::vec;
 
 use crate::{WIDTH,HEIGHT};
 
-const NUM_VORTICES: u32 = 5;
+const NUM_VORTICES: u32 = 40;
 
 struct Location<T> {
     x: T,
