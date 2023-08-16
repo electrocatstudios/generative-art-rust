@@ -24,7 +24,6 @@ const BLUE_DECAY: u32 = 5;
 
 const NUMBER_CHARACTERS_PER_LANE: u32 = 24;
 const NUMBER_LANES: u32 = 18;
-const BLUR: u32 = 5;
 
 fn get_font() -> Font<'static> {
     let font_data: &[u8] = include_bytes!("../fonts/fira-sans.bold.ttf");
