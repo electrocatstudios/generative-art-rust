@@ -13,7 +13,7 @@ const WIDTH: u32 = 300;
 const HEIGHT: u32 = 300;
 const FRAMES: u32 = 60;
 const REPETITIONS: u32 = 3;
-const NUM_VORTICES: u32 = 5;
+
 const DECAY: u32 = 4;
 
 fn prepare_next_frame(prev_image: Option<RgbImage>) -> RgbImage {

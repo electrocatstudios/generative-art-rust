@@ -2,7 +2,9 @@ use rand::prelude::*;
 use image::{RgbImage, Rgb};
 use std::vec; 
 
-use crate::{WIDTH,HEIGHT,NUM_VORTICES};
+use crate::{WIDTH,HEIGHT};
+
+const NUM_VORTICES: u32 = 5;
 
 struct Location<T> {
     x: T,
