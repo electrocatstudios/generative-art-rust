@@ -14,6 +14,13 @@ RUN apt update --fix-missing && \
     apt install ffmpeg -y
 
 COPY Cargo.toml /app/
+
+RUN mkdir src && \
+    echo 'fn main() {\nprintln!("Hello, world!");\n}' > src/main.rs && \
+    cargo build && \ 
+    cargo clean --package $(awk '/name/ {gsub(/"/,""); print $3}' Cargo.toml | sed ':a;N;$!ba;s/\n//g' | tr -d '\r') && \
+    rm -rf src 
+
 COPY src /app/src
 COPY fonts /app/fonts
 
