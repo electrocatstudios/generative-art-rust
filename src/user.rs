@@ -62,7 +62,7 @@ pub fn render_frame(frame: &mut RgbImage, fraction: f32, state: &mut State) {
                 let rot_x = (frame_fraction_radian + vp.rotation).sin() ;
                 let pos_x = center_x + (rot_x * (vp.width as f32)) as i32;
                 
-                let center_y: i32 = vp.center.x as i32 - half_size as i32 + y as i32;
+                let center_y: i32 = vp.center.y as i32 - half_size as i32 + y as i32;
                 let rot_y = (frame_fraction_radian + vp.rotation).cos();
                 let pos_y = center_y + (rot_y * (vp.width as f32)) as i32;
 
