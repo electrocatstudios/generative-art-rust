@@ -1,8 +1,10 @@
+#[cfg(not(target_arch="wasm32"))]
 use image::{Rgba, Rgb};
 
 #[cfg(target_arch="wasm32")]
 use wasm_bindgen::prelude::*;
 
+#[cfg(not(target_arch="wasm32"))]
 pub fn rgba8_to_rgb8(input: image::ImageBuffer<Rgba<u8>, Vec<u8>>) -> image::ImageBuffer<Rgb<u8>, Vec<u8>> {
     let width = input.width() as usize;
     let height = input.height() as usize;
