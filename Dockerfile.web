@@ -13,17 +13,24 @@ RUN apt update --fix-missing && \
     apt install librust-clang-sys-dev -y && \
     apt install ffmpeg -y
 
+RUN rustup target add wasm32-unknown-unknown && \
+    cargo install wasm-server-runner && \
+    cargo install -f wasm-bindgen-cli
+
+COPY .cargo /app/.cargo
 COPY Cargo.toml /app/
 
 RUN mkdir src && \
     echo 'fn main() {\nprintln!("Hello, world!");\n}' > src/main.rs && \
-    cargo build && \ 
+    cargo build --target wasm32-unknown-unknown && \ 
     cargo clean --package $(awk '/name/ {gsub(/"/,""); print $3}' Cargo.toml | sed ':a;N;$!ba;s/\n//g' | tr -d '\r') && \
     rm -rf src 
 
 COPY src /app/src
 COPY fonts /app/fonts
 
-RUN cargo run --features not_web
+RUN cargo build --features is_web --target wasm32-unknown-unknown && \
+    wasm-bindgen --out-dir ./out/ --target web \
+        ./target/wasm32-unknown-unknown/debug/generative-art-rust.wasm
 
-CMD [ "cp", "-r", "/app/outputs/", "/data/"]
+CMD [ "cp", "-r", "/app/out/", "/data/"]
