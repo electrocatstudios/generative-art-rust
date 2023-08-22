@@ -1,29 +1,40 @@
+
+use image::{RgbaImage,Rgba};
+
+#[cfg(not(target_arch="wasm32"))]
 use gif::{Frame, Encoder, Repeat};
-use image::{RgbImage,Rgb};
-
+#[cfg(not(target_arch="wasm32"))]
 use minimp4;
+#[cfg(not(target_arch="wasm32"))]
 use openh264;
-
+#[cfg(not(target_arch="wasm32"))]
 use std::io::{Cursor, Read, Seek, SeekFrom};
+#[cfg(not(target_arch="wasm32"))]
 use std::fs;
 
-mod user;
+#[cfg(target_arch="wasm32")]
+use wasm_bindgen::prelude::*;
+#[cfg(target_arch="wasm32")]
+use wasm_bindgen::JsCast;
 
-const WIDTH: u32 = 600;
-const HEIGHT: u32 = 600;
-const FRAMES: u32 = 60;
+mod user;
+mod utils;
+
+const WIDTH: u32 = 500;
+const HEIGHT: u32 = 500;
+const FRAMES: u32 = 30;
 const REPETITIONS: u32 = 3;
 
 const DECAY: u32 = 4;
 
-fn prepare_next_frame(prev_image: Option<RgbImage>) -> RgbImage {
-    let mut image: RgbImage = RgbImage::new(WIDTH, HEIGHT);
+fn prepare_next_frame(prev_image: Option<RgbaImage>) -> RgbaImage {
+    let mut image: RgbaImage = RgbaImage::new(WIDTH, HEIGHT);
     // Copy previous image or create new
     for x in 0..WIDTH {
         for y in 0..HEIGHT {
             match prev_image {
                 Some(ref prev_image) => {
-                    let mut pix_col: Rgb<u8> = *prev_image.get_pixel(x,y);
+                    let mut pix_col: Rgba<u8> = *prev_image.get_pixel(x,y);
                     // Add decay to any non-black pixel
                     if pix_col[0] != 0 {
                         if pix_col[0] >= DECAY as u8 {
@@ -49,7 +60,7 @@ fn prepare_next_frame(prev_image: Option<RgbImage>) -> RgbImage {
                     image.put_pixel(x,y,pix_col);
                 },
                 None => {
-                    image.put_pixel(x, y, Rgb([0, 0, 0]));
+                    image.put_pixel(x, y, Rgba([0, 0, 0, 255]));
                 }
             }
         }
@@ -57,6 +68,7 @@ fn prepare_next_frame(prev_image: Option<RgbImage>) -> RgbImage {
     image
 }
 
+#[cfg(not(target_arch="wasm32"))]
 fn main() {
     println!("Starting");
 
@@ -75,13 +87,13 @@ fn main() {
     let mut vid_encoder = openh264::encoder::Encoder::with_config(config).unwrap();
 
     // Generate the image - store prev frame in prev_image
-    let mut prev_image: Option<RgbImage> = None;
+    let mut prev_image: Option<RgbaImage> = None;
     let mut buf = Vec::new();
 
     let mut state = user::get_initial_state();
 
     for frame in 0..(3*FRAMES/2) {
-        let mut image: RgbImage = prepare_next_frame(prev_image);
+        let mut image: RgbaImage = prepare_next_frame(prev_image);
 
         // Perform caluclation of current frame state
         let frame_fraction = frame as f32 / FRAMES as f32;
@@ -94,12 +106,12 @@ fn main() {
         // and the first half of the second repetition - meaning we can get any fading colors captured as well
         if frame >= FRAMES / 2 && frame < (FRAMES*3/2) {
             // GIF 
-            let mut frame = Frame::from_rgb(WIDTH as u16, HEIGHT as u16, image.as_raw());
+            let mut frame = Frame::from_rgba(WIDTH as u16, HEIGHT as u16, &mut image.clone().into_raw());
             frame.delay = 1;
             encoder.write_frame(&frame.clone()).unwrap();
 
             // MP4
-            let yuv = openh264::formats::YUVBuffer::with_rgb(WIDTH as usize, HEIGHT as usize,&image.as_raw());
+            let yuv = openh264::formats::YUVBuffer::with_rgb(WIDTH as usize, HEIGHT as usize,&utils::rgba8_to_rgb8(image.clone()).as_raw());
             let bitstream = vid_encoder.encode(&yuv).unwrap();
             bitstream.write_vec(&mut buf);
         }
@@ -128,4 +140,60 @@ fn main() {
 
     println!("Done");
     
+}
+
+
+#[cfg(target_arch="wasm32")]
+fn main() {
+    web_sys::console::log_1(&"Starting the render portion".into());
+    
+    let document = web_sys::window().unwrap().document().unwrap();
+    let canvas = document.get_element_by_id("canvas").unwrap();
+    let canvas: web_sys::HtmlCanvasElement = canvas
+        .dyn_into::<web_sys::HtmlCanvasElement>()
+        .map_err(|_| ())
+        .unwrap();
+
+    let context = canvas
+        .get_context("2d")
+        .unwrap()
+        .unwrap()
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+        .unwrap();
+
+    // let mut prev_image: Option<RgbImage> = None;
+    // let mut image: RgbImage = prepare_next_frame(prev_image);
+    let mut image = RgbaImage::new(WIDTH, HEIGHT);
+    for x in 0..WIDTH {
+        for y in 0..WIDTH {
+            image.put_pixel(x,y,Rgba([255,55,55,255]));
+        }
+    }
+    let mut state = user::get_initial_state();
+    user::render_frame(&mut image, 0.0, &mut state);
+    
+    web_sys::console::log_1(&"Done rendering frame".into());
+
+    let clamped_buf: wasm_bindgen::Clamped<&[u8]> = wasm_bindgen::Clamped(image.as_raw());
+    // web_sys::console::log_1(data_str.into());
+
+    let image_data_temp = match web_sys::ImageData::new_with_u8_clamped_array(clamped_buf, WIDTH) {
+        Ok(res) => {
+            web_sys::console::log_1(&"Success while createing image data temp".into());
+            res
+        },
+        Err(err) => {
+            web_sys::console::log_1(&"Err while creating image data temp".into());
+            web_sys::console::log_1(&err);
+            web_sys::ImageData::new_with_sw(WIDTH, HEIGHT).unwrap()
+        }
+    };
+    
+    web_sys::console::log_1(&"About to draw frame".into());
+    let res = context.put_image_data(&image_data_temp, 0.0, 0.0);
+    match res {
+        Ok(_) => {},
+        Err(jsval) => web_sys::console::log_1(&jsval)
+    }
+    web_sys::console::log_1(&"Done with the draw frame".into());
 }
