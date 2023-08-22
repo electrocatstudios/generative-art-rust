@@ -1,5 +1,8 @@
 use image::{Rgba, Rgb};
 
+#[cfg(target_arch="wasm32")]
+use wasm_bindgen::prelude::*;
+
 pub fn rgba8_to_rgb8(input: image::ImageBuffer<Rgba<u8>, Vec<u8>>) -> image::ImageBuffer<Rgb<u8>, Vec<u8>> {
     let width = input.width() as usize;
     let height = input.height() as usize;
@@ -20,4 +23,12 @@ pub fn rgba8_to_rgb8(input: image::ImageBuffer<Rgba<u8>, Vec<u8>>) -> image::Ima
     
     // Construct a new image
     image::ImageBuffer::from_raw(width as u32, height as u32, output_data).unwrap()
+}
+
+#[cfg(target_arch="wasm32")]
+pub fn request_animation_frame(f: &Closure<dyn FnMut()>) {
+    let window =  web_sys::window().expect("no global `window` exists");
+    window
+        .request_animation_frame(f.as_ref().unchecked_ref())
+        .expect("should register `requestAnimationFrame` OK");
 }
