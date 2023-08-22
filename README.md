@@ -11,10 +11,29 @@ as well as hoping to inspire you to make your own creations.
 The series can be found [here](https://www.youtube.com/playlist?list=PLFOS-Gn3aXRMY45bqBNT8elRRsJ2gfKm2)
 
 ## To run locally
-`cargo run` - outputs to the `outputs` folder
+
+#### Gif and MP4
+`cargo run --features not_web` - outputs to the `outputs` folder
+
+#### For web output
+`cargo run --features is_web --target wasm32-unknown-unknown` - outputs to the target folder. You need to then compile for wasm-bindgen
+TODO: Missing instructions on wasm-bindgen command
 
 ## To run in docker
+
+#### Gif and MP4
 `./run_build.sh` - outputs to the `data/outputs` folder
+
+####
+`./run_build.sh --web` - outputs to the `data/out` folder. If you want to test
+it locally you can use the following Python command (will require Python to be
+installed).
+
+```bash 
+python -m http.server
+```
+
+The page will be visible at `localhost:8000`
 
 ## Adding Code
 You can add code in `user.rs`. There are two stages, the `setup` phase where you can create 
