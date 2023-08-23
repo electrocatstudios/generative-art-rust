@@ -30,6 +30,7 @@ it locally you can use the following Python command (will require Python to be
 installed).
 
 ```bash 
+cd data/out
 python -m http.server
 ```
 
