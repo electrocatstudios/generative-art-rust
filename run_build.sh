@@ -24,9 +24,13 @@ if [ $IS_WEB = true ]; then
   
   # | sed ':a;N;$!ba;s/\n//g' 
   cp templates/index.html data/out/index.html
-
-  sed -i '' "s/<<WIDTH>>/$WIDTH/" "data/out/index.html"
-  sed -i '' "s/<<HEIGHT>>/$HEIGHT/" data/out/index.html
+  if [[ $OSTYPE == 'darwin'* ]]; then 
+    sed -i '' "s/<<WIDTH>>/$WIDTH/" "data/out/index.html"
+    sed -i '' "s/<<HEIGHT>>/$HEIGHT/" "data/out/index.html"
+  else
+    sed -i "s/<<WIDTH>>/$WIDTH/" "data/out/index.html"
+    sed -i "s/<<HEIGHT>>/$HEIGHT/" "data/out/index.html"
+  fi
 fi
 
 # docker rm $(docker container ls -a -q --filter ancestor=gen_rust --filter status=exited)
