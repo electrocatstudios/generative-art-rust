@@ -26,11 +26,11 @@ use std::rc::Rc;
 mod user;
 mod utils;
 
-const WIDTH: u32 = 500;
-const HEIGHT: u32 = 500;
-const FRAMES: u32 = 30;
-const FRAMES_PER_SECOND: u32 = 30;
-const REPETITIONS: u32 = 3;
+const WIDTH: u32 = 300;
+const HEIGHT: u32 = 300;
+const FRAMES: u32 = 360;
+const FRAMES_PER_SECOND: f32 = 10.0;
+const REPETITIONS: u32 = 10;
 
 const DECAY: u32 = 6;
 
@@ -118,9 +118,11 @@ fn main() {
             encoder.write_frame(&frame.clone()).unwrap();
 
             // MP4
+            // for _ in 0..5 {
             let yuv = openh264::formats::YUVBuffer::with_rgb(WIDTH as usize, HEIGHT as usize,&utils::rgba8_to_rgb8(image.clone()).as_raw());
             let bitstream = vid_encoder.encode(&yuv).unwrap();
             bitstream.write_vec(&mut buf);
+            // }
         }
         
         prev_image = Some(image.to_owned());
