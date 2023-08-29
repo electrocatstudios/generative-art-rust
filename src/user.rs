@@ -13,4 +13,23 @@ pub fn get_initial_state() -> State {
 }
 
 pub fn render_frame(frame: &mut RgbaImage, fraction: f32, state: &mut State) {
+    draw_circle(
+        frame, 
+        Rgba([0,255,0,255]), 
+        &Location{
+            x:WIDTH/3,
+            y:HEIGHT/2,
+        }, 
+        50
+    );
+
+    draw_square(
+        frame, 
+        Rgba([0,55,255,255]), 
+        &Location{
+            x:(WIDTH/3) * 2,
+            y:(HEIGHT/2)
+        }, 
+        50
+    );
 }
