@@ -25,6 +25,7 @@ use std::rc::Rc;
 
 mod user;
 mod utils;
+mod draw_tools;
 
 const WIDTH: u32 = 500;
 const HEIGHT: u32 = 500;
