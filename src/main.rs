@@ -29,11 +29,11 @@ mod draw_tools;
 
 const WIDTH: u32 = 500;
 const HEIGHT: u32 = 500;
-const FRAMES: u32 = 30;
+const FRAMES: u32 = 360;
 const FRAMES_PER_SECOND: u32 = 30;
 const REPETITIONS: u32 = 3;
 
-const DECAY: u32 = 6;
+const DECAY: u32 = 55;
 
 fn prepare_next_frame(prev_image: Option<RgbaImage>, frame_count: u8) -> RgbaImage {
     let mut image: RgbaImage = RgbaImage::new(WIDTH, HEIGHT);
