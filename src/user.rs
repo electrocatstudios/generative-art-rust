@@ -15,6 +15,25 @@ pub fn get_initial_state() -> State {
 
 pub fn render_frame(frame: &mut RgbaImage, fraction: f32, state: &mut State) {
 
+    let light_blue = Rgba::from([105, 180, 255, 255]);
+    let dark_blue = Rgba::from([105, 25, 205, 255]);
+    
+    // Clear background
+    for x in 0..WIDTH {
+        for y in 0..HEIGHT {
+            frame.put_pixel(x, y, light_blue);
+        }
+    }
+
+    for x in 0..=5 {
+        let line_x = (fraction * -500.) as i32 + (x*200);
+        let pt1 = (line_x, 500);
+        let pt2 = (line_x + 100, 0);
+        let pt3 = (line_x + 100, 500);
+        let pt4 = (line_x + 200, 0);
+        draw_filled_triangle_from_points(frame, dark_blue, dark_blue, pt1, pt2, pt3);
+        draw_filled_triangle_from_points(frame, dark_blue, dark_blue, pt4, pt2, pt3);
+    }
 
     render_hex(frame, fraction, state, (250, 250)); // Center point
     render_hex(frame, fraction, state, (-50, 250)); // Center point - L
@@ -53,24 +72,24 @@ pub fn render_hex(frame: &mut RgbaImage, fraction: f32, state: &mut State, offse
     let added_rot = (2. * std::f32::consts::PI) - added_rot;
     let fraction = (fraction * 6.) % 1.;
 
-    let mut col = Rgba::from([255, 55, 0, 255]);
-    let outline = Rgba::from([205, 105, 0, 255]);
+    let mut col = Rgba::from([255, 55, 35, 255]);
+    let outline = Rgba::from([245, 255, 5, 255]);
     
     draw_triangle_flip(frame, outline, col, fraction, added_rot, offset);
     col[0] -= 30;
-    col[1] += 20;
+    col[2] += 20;
     draw_triangle_flip(frame, outline, col, fraction, added_rot + std::f32::consts::PI * (60. / 180.), offset);
     col[0] -= 30;
-    col[1] += 20;
+    col[2] += 20;
     draw_triangle_flip(frame, outline, col, fraction, added_rot + std::f32::consts::PI * (120. / 180.), offset);
     col[0] -= 30;
-    col[1] += 20;
+    col[2] += 20;
     draw_triangle_flip(frame, outline, col, fraction, added_rot + std::f32::consts::PI, offset);
     col[0] -= 30;
-    col[1] += 20;
+    col[2] += 20;
     draw_triangle_flip(frame, outline, col, fraction, added_rot + std::f32::consts::PI * (240. / 180.), offset);
     col[0] -= 30;
-    col[1] += 20;
+    col[2] += 20;
     draw_triangle_flip(frame, outline, col, fraction, added_rot + std::f32::consts::PI * (300. / 180.), offset);
     
 }

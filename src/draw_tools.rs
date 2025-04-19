@@ -69,12 +69,16 @@ pub fn draw_filled_triangle_from_points(frame: &mut RgbaImage, col_outline: Rgba
         let left_point_x = points[0].0 as f64 + ((points[2].0 - points[0].0) as f64 * alpha);
         let left_point_x = if left_point_x < 0.0 {
             0.0
+        }  else if left_point_x >= WIDTH as f64 {
+            (WIDTH-1) as f64
         } else {
             left_point_x
         };
         let right_point_x = points[0].0 as f64 + ((points[1].0 - points[0].0) as f64 * beta);
         let right_point_x = if right_point_x < 0.0 {
             0.0
+        } else if right_point_x >= WIDTH as f64 {
+            (WIDTH-1) as f64
         } else {
             right_point_x
         };
@@ -92,12 +96,16 @@ pub fn draw_filled_triangle_from_points(frame: &mut RgbaImage, col_outline: Rgba
         let left_point_x = points[0].0 as f64 + ((points[2].0 - points[0].0) as f64 * alpha);
         let left_point_x = if left_point_x < 0.0 {
             0.0
+        }  else if left_point_x >= WIDTH as f64{
+            (WIDTH-1) as f64
         } else {
             left_point_x
         };
         let right_point_x = points[1].0 as f64 + ((points[2].0 - points[1].0) as f64 * beta);
         let right_point_x = if right_point_x < 0.0 {
             0.0
+        } else if right_point_x >= WIDTH as f64 {
+            (WIDTH-1) as f64
         } else {
             right_point_x
         };
