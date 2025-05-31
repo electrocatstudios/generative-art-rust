@@ -11,7 +11,7 @@ pub struct Location<T> {
 pub fn draw_square(frame: &mut RgbaImage, color: Rgba<u8>, location: &Location<u32>, size: u32) {
     for x in (location.x - (size/2))..(location.x + (size/2)) {
         for y in (location.y - (size/2))..(location.y + (size/2)) {
-            if x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT {
+            if x < WIDTH && y < HEIGHT {
                 frame.put_pixel(x, y, color);
             }
         }
