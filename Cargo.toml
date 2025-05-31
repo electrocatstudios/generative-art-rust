@@ -9,20 +9,13 @@ edition = "2021"
 image = "0.24.6"
 imageproc = "0.23.0"
 rand = "0.8.5"
-gif = { version="0.12.0", optional=true }
-minimp4 = { version="0.1.0", optional=true }
-openh264 = { version="0.4.1", optional=true }
 js-sys = { version="0.3.64", optional=true }
-wasm-bindgen = { version="0.2.87", optional=true }
+wasm-bindgen = { version="0.2.88", optional=true }
 web-time = { version="0.2.0", optional=true }
-
-#[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-[features]
-not_web=["dep:gif", "dep:minimp4", "dep:openh264"]
-is_web=["dep:js-sys", "dep:wasm-bindgen", "dep:web-time"]
-
-#is_web=[js-sys,wasm-bindgen]
-# [target.'cfg(target_arch = "wasm32")'.dependencies]
+line_drawing = "1.0.1"
+gif = "0.13.1"
+minimp4 = "0.1.2"
+openh264 = "0.4.4"
 
 [dependencies.web-sys]
 version = "0.3.4"
